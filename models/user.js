@@ -15,11 +15,7 @@ const userSchema = new mongoose.Schema({
         enum: ['investor', 'farmer'],
         required: true,
     },
-    firstName: {
-        type: String,
-        required: true,
-    },
-    lastName: {
+    fullName: {
         type: String,
         required: true,
     },
@@ -30,6 +26,15 @@ const userSchema = new mongoose.Schema({
     phone: {
         type: String,
         required: true,
+    },
+    otp: {
+        value: String,
+        epoch: String,
+    },
+    isActive: {
+        type: String,
+        required: true,
+        default: false
     },
     balance: {
         type: Number,
