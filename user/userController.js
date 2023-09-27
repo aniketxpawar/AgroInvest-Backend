@@ -3,7 +3,6 @@ const db = require("../models/user");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
-const smtpTransport = require("nodemailer-smtp-transport");
 
 const signupfarmer = async (req, res, next) => {
   try {
@@ -99,7 +98,7 @@ const signupinvestor = async (req, res, next) => {
     });
 
     const transporter = nodemailer.createTransport({
-      service: "SMTP",
+      service: "gmail",
       auth: {
         user: process.env.OFFICIAL_EMAIL,
         pass: process.env.OFFICIAL_PASS,
