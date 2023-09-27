@@ -1,6 +1,6 @@
 const express = require('express');
 require('dotenv').config();
-const apiRouter = require('./API/apiRouter.js');
+const userRouter = require('./user/userRouter.js');
 const mongoose = require('mongoose');
 
 const app = express();
@@ -16,6 +16,6 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
   });
 
 
-app.use("/",apiRouter)
+app.use("/user",userRouter)
 
 app.listen(process.env.PORT,()=>console.log("Server is running at port "+process.env.PORT));
