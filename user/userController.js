@@ -186,4 +186,17 @@ const login = async (req, res, next) => {
   }
 };
 
-module.exports = { signupfarmer, signupinvestor, login };
+const getFarmersList = async(req,res,next) => {
+  try{
+    const farmers = await db.find({userType:"farmer"}).select('_id fullName location area');
+    if(!farmers){
+      return res.status(204).json({message:"No Farmers!"});
+    }
+    res.status(200).json(farmers);
+  } catch(err){
+    console.error(err);
+    res.status(500).send("Internal server error");
+  }
+}
+
+module.exports = { signupfarmer, signupinvestor, login, getFarmersList };

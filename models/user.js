@@ -23,6 +23,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         //required: true,
     },
+    location: {
+        type:String
+    },
+    area: {
+        type: String
+    },
     phone: {
         type: String,
         required: true,

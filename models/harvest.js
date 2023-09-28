@@ -10,7 +10,7 @@ const harvestSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user', // Array of references to investors
   }],
-  cropType: {
+  crop: {
     type: String,
     required: true,
   },
@@ -22,12 +22,13 @@ const harvestSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  amountPerKg: {
+    type: mongoose.Decimal128
+  },
   harvested: {
     type: Boolean,
     default: false, // Default to false indicating not yet harvested
   },
-  harvestDate: Date,
-  wholesalePrice: Number,
   quantity: Number,
   investedAmount: [{
     investor: {
@@ -35,6 +36,7 @@ const harvestSchema = new mongoose.Schema({
       ref: 'user', // Reference to the investor
     },
     amount: Number,
+    quantity: Number
   }],
 });
 
