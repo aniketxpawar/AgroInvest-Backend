@@ -9,6 +9,8 @@ router.get('/', async (req, res, next) => {
 router.post('/signupfarmer', userController.signupfarmer)
 router.post('/signupinvestor', userController.signupinvestor)
 router.post('/login', userController.login)
+router.post('/verifyotp', userController.verifyOtp)
+router.post('/resendotp', userController.resendOtp)
 router.get('/getFarmers', userController.getFarmersList)
 
 module.exports = router;
