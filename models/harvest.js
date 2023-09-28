@@ -6,9 +6,9 @@ const harvestSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user', // Reference to the user who is the farmer
   },
-  investors: [{
+  investments: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'user', // Array of references to investors
+    ref: 'investment', // Array of references to investors
   }],
   crop: {
     type: String,
@@ -23,21 +23,17 @@ const harvestSchema = new mongoose.Schema({
     required: true,
   },
   amountPerKg: {
-    type: mongoose.Decimal128
+    type: Number
   },
   harvested: {
     type: Boolean,
     default: false, // Default to false indicating not yet harvested
   },
+  soldOut: {
+    type: Boolean,
+    default:false
+  },
   quantity: Number,
-  investedAmount: [{
-    investor: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'user', // Reference to the investor
-    },
-    amount: Number,
-    quantity: Number
-  }],
 });
 
 const Harvest = mongoose.model('harvest', harvestSchema);

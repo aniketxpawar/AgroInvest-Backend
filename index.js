@@ -23,6 +23,6 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 
 app.use("/user",userRouter)
 app.use("/harvest",harvestRouter)
-app.use("/investor",investmentRouter)
+app.use("/investment",investmentRouter)
 
 app.listen(process.env.PORT,()=>console.log("Server is running at port "+process.env.PORT));

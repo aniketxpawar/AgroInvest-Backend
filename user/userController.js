@@ -43,8 +43,7 @@ const signupfarmer = async (req, res, next) => {
       from: process.env.OFFICIAL_EMAIL,
       to: newUser.email,
       subject: "Verification Email",
-      text: `Hello ${user.fullName},\n\nYour OTP is: ${user.otp.value}.\n\nDo not share your otp with anyone!!\n\n
-      Note: OTP is only valid for 30 Minutes.`
+      text: `Hello ${user.fullName},\n\nYour OTP is: ${user.otp.value}.\n\nDo not share your otp with anyone!!\n\nNote: OTP is only valid for 30 Minutes.`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -81,7 +80,7 @@ const signupinvestor = async (req, res, next) => {
       return res
         .status(403)
         .json({
-          message: "Account is not active, please verify your email address!",
+          message: "Already Signed Up, Please Verify your Email.",
         });
     }
     password = await bcrypt.hash(password, 10);
@@ -102,7 +101,7 @@ const signupinvestor = async (req, res, next) => {
       from: process.env.OFFICIAL_EMAIL,
       to: newUser.email,
       subject: "Verification Email",
-      text: `Hello ${fullName},\n\nYour OTP is: ${otp.value}.\n\nDo not share your otp with anyone!!`,
+      text: `Hello ${user.fullName},\n\nYour OTP is: ${user.otp.value}.\n\nDo not share your otp with anyone!!\n\nNote: OTP is only valid for 30 Minutes.`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -152,8 +151,7 @@ const login = async (req, res, next) => {
       from: process.env.OFFICIAL_EMAIL,
       to: user.email,
       subject: "Verification Email",
-      text: `Hello ${user.fullName},\n\nYour OTP is: ${user.otp.value}.\n\nDo not share your otp with anyone!!\n\n
-      Note: OTP is only valid for 30 Minutes.`,
+      text: `Hello ${user.fullName},\n\nYour OTP is: ${user.otp.value}.\n\nDo not share your otp with anyone!!\n\nNote: OTP is only valid for 30 Minutes.`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -235,8 +233,7 @@ const resendOtp = async(req,res,next) => {
       from: process.env.OFFICIAL_EMAIL,
       to: user.email,
       subject: "Verification Email",
-      text: `Hello ${user.fullName},\n\nYour OTP is: ${user.otp.value}.\n\nDo not share your otp with anyone!!\n\n
-      Note: OTP is only valid for 30 Minutes.`
+      text: `Hello ${user.fullName},\n\nYour OTP is: ${user.otp.value}.\n\nDo not share your otp with anyone!!\n\nNote: OTP is only valid for 30 Minutes.`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
