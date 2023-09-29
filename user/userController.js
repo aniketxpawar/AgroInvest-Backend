@@ -251,6 +251,19 @@ const resendOtp = async(req,res,next) => {
   }
 }
 
+const getUserById = async(req,res,next) => {
+  try{
+    const user = await db.findById(req.params.id)
+    if(!user){
+      return res.status(204).json({message:"User does not exist"});
+    }
+    res.status(200).json(user);
+  } catch(err){
+    console.error(err);
+    res.status(500).send("Internal server error");
+  }
+}
+
 const getFarmersList = async(req,res,next) => {
   try{
     const farmers = await db.find({userType:"farmer"}).select('_id fullName location area');
@@ -264,4 +277,4 @@ const getFarmersList = async(req,res,next) => {
   }
 }
 
-module.exports = { signupfarmer, signupinvestor, login, verifyOtp, resendOtp, getFarmersList };
+module.exports = { signupfarmer, signupinvestor, login, verifyOtp, resendOtp, getFarmersList, getUserById };
