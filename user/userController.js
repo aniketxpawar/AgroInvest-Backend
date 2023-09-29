@@ -268,7 +268,7 @@ const getFarmersList = async(req,res,next) => {
   try{
     const farmers = await db.find({userType:"farmer"}).select('_id fullName location area');
     if(!farmers){
-      return res.status(204).json({message:"No Farmers!"});
+      return res.status(404).json({message:"No Farmers!"});
     }
     res.status(200).json(farmers);
   } catch(err){

@@ -1,6 +1,7 @@
 const harvest = require('../models/harvest')
-const { ObjectId } = require('mongodb');
-const mongoose = require('mongoose')
+const { ObjectId } = require('mongoose').Types;
+const db = require('../models/user')
+
 
 const createHarvest = async(req,res,next) => {
     try{
@@ -20,13 +21,19 @@ const createHarvest = async(req,res,next) => {
     }
 }
 
-const getHarvestById = async(req,res,next) => {
+const getHarvestByFarmerId = async(req,res,next) => {
     try{
         const {id} = req.params;
+        const farmer = await db.findById(id).select('fullName location area')
+        const harvests = await harvest.find({farmer: new ObjectId(id)})
+        if(harvests.length==0){
+            return res.status(404).json({message:"No Harvest of this Farmer"})
+        }
+        res.status(200).json({...farmer._doc,harvests})
     } catch(err){
         console.log(err)
         res.status(500).send("Internal Server Error.")
     }
 }
 
-module.exports = {createHarvest, getHarvestById}
+module.exports = {createHarvest, getHarvestByFarmerId}
