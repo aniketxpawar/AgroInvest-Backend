@@ -36,4 +36,18 @@ const getHarvestByFarmerId = async(req,res,next) => {
     }
 }
 
-module.exports = {createHarvest, getHarvestByFarmerId}
+const getHarvestById = async(req,res,next) => {
+    try{
+        const {id} = req.params;
+        const har = await harvest.findById(id)
+        if(!har){
+            return res.status(404).json({message:"Harvest not found"})
+        }
+        res.status(200).json(har)
+    } catch(err){
+        console.log(err)
+        res.status(500).send("Internal Server Error.")
+    }
+}
+
+module.exports = {createHarvest, getHarvestByFarmerId, getHarvestById}
