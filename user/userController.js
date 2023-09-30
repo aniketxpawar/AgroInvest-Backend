@@ -101,7 +101,7 @@ const signupinvestor = async (req, res, next) => {
       from: process.env.OFFICIAL_EMAIL,
       to: newUser.email,
       subject: "Verification Email",
-      text: `Hello ${user.fullName},\n\nYour OTP is: ${user.otp.value}.\n\nDo not share your otp with anyone!!\n\nNote: OTP is only valid for 30 Minutes.`
+      text: `Hello ${newUser.fullName},\n\nYour OTP is: ${newUser.otp.value}.\n\nDo not share your otp with anyone!!\n\nNote: OTP is only valid for 30 Minutes.`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -164,7 +164,7 @@ const login = async (req, res, next) => {
     });
         res
           .status(408)
-          .send("Verify your email address by entering the OTP sent to your email");
+          .json({message:"Verify your email address by entering the OTP sent to your email",userId:user._id});
       } else {
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
@@ -212,7 +212,15 @@ const verifyOtp = async(req,res,next) => {
     }
     user.isActive = true;
     await user.save();
-    res.status(200).json({message:"OTP Verified"})
+    const [accessToken, refreshToken] = await Promise.all([
+      jwt.sign({ id: user._id, email:user.email }, process.env.JWT_KEY, {
+        expiresIn: "15m",
+      }),
+      jwt.sign({ id: user._id, email:user.email }, process.env.JWT_REFRESHTOKEN_KEY, {
+        expiresIn: "30d",
+      }),
+    ]);
+    res.status(200).json({message:"OTP Verified",accessToken,refreshToken})
   } catch(err){
     console.log(err)
     res.status(500).send("Internal Server Error.")
