@@ -1,6 +1,6 @@
 const investment = require('../models/investment');
 const harvest = require('../models/harvest');
-const {ObjectId} = require('mongodb')
+const { ObjectId } = require('mongoose').Types;
 
 const createInvestment = async(req,res,next) => {
     try{
@@ -29,4 +29,18 @@ const createInvestment = async(req,res,next) => {
     }
 }
 
-module.exports = {createInvestment}
+const getInvestmentsByUserId = async(req,res,next) => {
+    try{
+        const {id} = req.params
+        const inv = await investment.find({investor:new ObjectId(id)})
+        if(!inv){
+            return res.status(409).json({message:"You have not invested in any Harvests yet."})
+        }
+        res.status(200).json(inv)
+    } catch(err){
+        console.log(err)
+        res.status(500).send("Internal Server Error")
+    }
+}
+
+module.exports = {createInvestment, getInvestmentsByUserId}
