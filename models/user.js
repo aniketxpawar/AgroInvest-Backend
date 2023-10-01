@@ -35,10 +35,10 @@ const userSchema = new mongoose.Schema({
     },
     otp: {
         value: String,
-        epoch: String,
+        epoch: Number,
     },
     isActive: {
-        type: String,
+        type: Boolean,
         required: true,
         default: false
     },
