@@ -43,7 +43,7 @@ const signupfarmer = async (req, res, next) => {
       from: process.env.OFFICIAL_EMAIL,
       to: newUser.email,
       subject: "Verification Email",
-      text: `Hello ${user.fullName},\n\nYour OTP is: ${user.otp.value}.\n\nDo not share your otp with anyone!!\n\nNote: OTP is only valid for 30 Minutes.`
+      text: `Hello ${newUser.fullName},\n\nYour OTP is: ${newUser.otp.value}.\n\nDo not share your otp with anyone!!\n\nNote: OTP is only valid for 30 Minutes.`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
