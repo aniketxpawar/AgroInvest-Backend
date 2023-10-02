@@ -220,7 +220,7 @@ const verifyOtp = async(req,res,next) => {
         expiresIn: "30d",
       }),
     ]);
-    res.status(200).json({message:"OTP Verified",accessToken,refreshToken})
+    res.status(200).json({message:"OTP Verified",_id:user._id, email:user.email,accessToken,refreshToken})
   } catch(err){
     console.log(err)
     res.status(500).send("Internal Server Error.")
