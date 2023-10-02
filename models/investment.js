@@ -10,6 +10,7 @@ const investmentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'harvest', // Reference to the Harvest in which the investor has invested
   },
+  quantity: Number,
   amount: {
     type: Number,
     required: true,
