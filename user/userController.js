@@ -23,7 +23,7 @@ const signupfarmer = async (req, res, next) => {
     } else if (exists && !exists.isActive) {
       return res
         .status(403)
-        .json({ message: "Already Signed Up, Please Verify your Email." });
+        .json({ message: "Already Signed Up, PLease Log in!" });
     }
     password = await bcrypt.hash(password, 10);
     const otp = {
@@ -80,7 +80,7 @@ const signupinvestor = async (req, res, next) => {
       return res
         .status(403)
         .json({
-          message: "Already Signed Up, Please Verify your Email.",
+          message: "Already Signed Up, PLease Log in!",
         });
     }
     password = await bcrypt.hash(password, 10);
@@ -187,6 +187,7 @@ const login = async (req, res, next) => {
           _id: user._id,
           email: user.email,
           fullName: user.fullName,
+          userType: user.userType,
           message: "Login successful",
           accessToken,
           refreshToken,
@@ -220,7 +221,7 @@ const verifyOtp = async(req,res,next) => {
         expiresIn: "30d",
       }),
     ]);
-    res.status(200).json({message:"OTP Verified",_id:user._id, email:user.email,accessToken,refreshToken})
+    res.status(200).json({message:"OTP Verified",_id:user._id, email:user.email,accessToken,refreshToken,userType:user.userType})
   } catch(err){
     console.log(err)
     res.status(500).send("Internal Server Error.")
