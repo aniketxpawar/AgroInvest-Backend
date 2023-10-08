@@ -36,7 +36,19 @@ const getInvestmentsByUserId = async(req,res,next) => {
         if(!inv){
             return res.status(409).json({message:"You have not invested in any Harvests yet."})
         }
-        res.status(200).json(inv)
+        const result = await Promise.all(
+            inv.map(async (record) => {
+              const har = await harvest.findById(record.harvest).populate({
+                path: 'farmer',
+                select: '_id fullName location',
+              }).select('crop _id expectedHarvestDate soldOut');
+      
+              record.harvest = har;
+              return record;
+            })
+          );
+
+        res.status(200).json(result.reverse())
     } catch(err){
         console.log(err)
         res.status(500).send("Internal Server Error")
