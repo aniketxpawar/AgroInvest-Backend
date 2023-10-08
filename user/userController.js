@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const db = require("../models/user");
+const harvest = require("../models/harvest");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
@@ -273,17 +274,28 @@ const getUserById = async(req,res,next) => {
   }
 }
 
-const getFarmersList = async(req,res,next) => {
-  try{
-    const farmers = await db.find({userType:"farmer"}).select('_id fullName location area');
-    if(!farmers){
-      return res.status(404).json({message:"No Farmers!"});
+const getFarmersList = async (req, res, next) => {
+  try {
+    const farmers = await db.find({ userType: "farmer", isActive: true }).select('_id fullName location area');
+    if (!farmers || farmers.length === 0) {
+      return res.status(404).json({ message: "No Farmers!" });
     }
-    res.status(200).json(farmers);
-  } catch(err){
+
+    const farmersWithCropsPromises = farmers.map(async (farmer) => {
+      const harvests = await harvest.find({ farmer: farmer._id });
+      const crops = Array.from(new Set(harvests.map((har) => har.crop)));
+
+      return { ...farmer.toObject(), crops };
+    });
+
+    const farmersWithCrops = await Promise.all(farmersWithCropsPromises);
+
+    res.status(200).json(farmersWithCrops);
+  } catch (err) {
     console.error(err);
     res.status(500).send("Internal server error");
   }
-}
+};
+
 
 module.exports = { signupfarmer, signupinvestor, login, verifyOtp, resendOtp, getFarmersList, getUserById };
