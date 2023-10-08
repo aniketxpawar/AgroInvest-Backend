@@ -50,4 +50,22 @@ const getHarvestById = async(req,res,next) => {
     }
 }
 
-module.exports = {createHarvest, getHarvestByFarmerId, getHarvestById}
+const getAllHarvest = async (req,res,next) => {
+    try{
+        const result = await harvest.find({soldOut:false}).populate({
+            path: 'farmer',
+            select: '_id fullName location',
+          });
+        if(!result){
+            return res.status(403).json({message:"No Harvests Found"})
+        }
+
+        res.status(200).json(result);
+
+    } catch(err){
+        console.log(err);
+        res.status(500).json({message:"Internal Server Error"})
+    }
+}
+
+module.exports = {createHarvest, getHarvestByFarmerId, getHarvestById, getAllHarvest}
