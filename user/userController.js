@@ -2,10 +2,13 @@ const bcrypt = require("bcryptjs");
 const db = require("../models/user");
 const harvest = require("../models/harvest");
 const cart = require("../models/cart");
+const requestForm = require("../models/request");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const { ObjectId } = require('mongoose').Types;
+const axios = require('axios');
+const { request } = require("express");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -344,6 +347,64 @@ const removeFromCart = async(req,res,next) => {
   }
 }
 
+const checkout = async (req, res, next) => {
+  try {
+    const items = req.body;
+
+    const result = await Promise.all(
+      items.map(async (item) => {
+        const buyApiUrl = 'http://localhost:3000/investment/newInvestment';
+        const buyResponse = await axios.post(buyApiUrl, {
+          investorId: item.investorId,
+          harvestId: item.harvestId._id,
+          qty: item.quantity,
+        });
+
+        const removeFromCart = await cart.findByIdAndDelete(item._id);
+        return removeFromCart;
+      })
+    );
+
+    if (!result) {
+      return res.status(500).json({ message: "Something went wrong" });
+    }
+
+    res.status(200).json({ message: "Transaction Complete" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+const sendRequest = async(req,res,next) => {
+  try{
+    const {farmer,crop,expectedHarvestDate,quantity,totalInvestment} = req.body;
+    const newRequest = await requestForm.create({farmer:new ObjectId(farmer),crop,expectedHarvestDate,quantity,totalInvestment,stage:"Pending"})
+    if(!newRequest){
+      return res.status(500).json({message:"Request Not Sent"})
+    }
+    res.status(200).json({message:"Request Sent Successfully"})
+  } catch(err){
+    console.log(err)
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+const getRequests = async(req,res,next) => {
+  try{
+    const {id} = req.params;
+    const result = await requestForm.find({farmer: new ObjectId(id)})
+    if(!result.length>0){
+      return res.status(404).send({message:"No Requests"})
+    }
+    res.status(200).json(result)
+  } catch(err){
+    console.log(err);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+
 
 module.exports = { signupfarmer, signupinvestor, login, verifyOtp, resendOtp, getFarmersList, getUserById,
-   addToCart, getCartItemsByUserId, removeFromCart };
+   addToCart, getCartItemsByUserId, removeFromCart, checkout, sendRequest, getRequests };

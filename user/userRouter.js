@@ -17,5 +17,8 @@ router.get('/getUserById/:id',userController.getUserById)
 router.post('/addToCart', userController.addToCart)
 router.get('/getCartItems/:userId', userController.getCartItemsByUserId)
 router.delete('/removeFromCart/:id',userController.removeFromCart)
+router.post('/checkout',userController.checkout);
+router.post('/request',userController.sendRequest);
+router.get('/getRequests/:id',userController.getRequests);
 
 module.exports = router;
