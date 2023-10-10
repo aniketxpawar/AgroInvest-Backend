@@ -1,9 +1,11 @@
 const bcrypt = require("bcryptjs");
 const db = require("../models/user");
 const harvest = require("../models/harvest");
+const cart = require("../models/cart");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const { ObjectId } = require('mongoose').Types;
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -297,5 +299,51 @@ const getFarmersList = async (req, res, next) => {
   }
 };
 
+const addToCart = async(req,res,next) => {
+  try{
+    const {investorId, harvestId, qty} = req.body;
+    const cartItem = await cart.create({investorId,harvestId,quantity:qty});
+    res.status(200).json({message:"Item Added to Cart."})
+  } catch(err){
+    console.log(err);
+    res.status(500).send("Internal Server Error");
+  }
+}
 
-module.exports = { signupfarmer, signupinvestor, login, verifyOtp, resendOtp, getFarmersList, getUserById };
+const getCartItemsByUserId = async(req,res,next) => {
+  try{
+    const {userId} = req.params;
+    const cartItems = await cart.find({investorId:new ObjectId(userId)}).populate({
+      path:'harvestId',
+      select:'_id crop amountPerKg'
+    });
+    if(!cartItems){
+      return res.status(200).json({message:"No items in the Cart"})
+    }
+    res.status(200).json(cartItems);
+
+  } catch(err){
+    console.log(err)
+    res.status(500).send("Internal Server Error")
+  }
+}
+
+const removeFromCart = async(req,res,next) => {
+  try{
+    const {id} = req.params;
+    console.log(req.params)
+    const removeItem = await cart.findByIdAndDelete(id);
+    if(!removeItem){
+      return res.status(403).json({message:"Failed to Remove Item"})
+    }
+    res.status(200).json({message:"Item Removed From Cart"});
+
+  } catch(err){
+    console.log(err);
+    res.status(500).send("Internal Server Error")
+  }
+}
+
+
+module.exports = { signupfarmer, signupinvestor, login, verifyOtp, resendOtp, getFarmersList, getUserById,
+   addToCart, getCartItemsByUserId, removeFromCart };
