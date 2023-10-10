@@ -13,3 +13,7 @@ const cartSchema = new mongoose.Schema({
   quantity: Number,
 });
 
+const Cart = mongoose.model('cart', cartSchema);
+
+module.exports = Cart;
+
